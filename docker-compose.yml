@@ -1,0 +1,59 @@
+services:
+  mysql:
+    image: mysql:8.4
+    container_name: recruitment-mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: recruitment_platform
+      MYSQL_USER: recruitment_user
+      MYSQL_PASSWORD: recruitment_password
+      MYSQL_ROOT_PASSWORD: root_password
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql-data:/var/lib/mysql
+      - ./database/migrations:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build:
+      context: ./backend
+    container_name: recruitment-backend
+    restart: unless-stopped
+    env_file:
+      - ./backend/.env.example
+    ports:
+      - "8080:8080"
+    depends_on:
+      mysql:
+        condition: service_healthy
+
+  ai-service:
+    build:
+      context: ./ai-service
+    container_name: recruitment-ai-service
+    restart: unless-stopped
+    env_file:
+      - ./ai-service/.env.example
+    ports:
+      - "5000:5000"
+
+  frontend:
+    build:
+      context: ./frontend
+    container_name: recruitment-frontend
+    restart: unless-stopped
+    env_file:
+      - ./frontend/.env.example
+    ports:
+      - "5173:5173"
+    depends_on:
+      - backend
+      - ai-service
+
+volumes:
+  mysql-data:
