@@ -96,5 +96,25 @@ public class JobService {
                 .toList();
 
     }
+    public List<JobSummaryResponse> getMyJobs() {
+
+        Authentication authentication =
+                SecurityContextHolder
+                        .getContext()
+                        .getAuthentication();
+
+        String email = authentication.getName();
+
+        return repository.findByRecruiterEmail(email)
+                .stream()
+                .map(job -> new JobSummaryResponse(
+                        job.getId(),
+                        job.getTitle(),
+                        job.getDepartment(),
+                        job.getLocation()
+                ))
+                .toList();
+
+    }
 
 }

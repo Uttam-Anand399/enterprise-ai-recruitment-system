@@ -35,4 +35,8 @@ public class JobController {
     public List<JobSummaryResponse> getAllJobs() {
         return service.getAllJobs();
     }
+    @GetMapping("/my")
+    public List<JobSummaryResponse> getMyJobs() {
+        return service.getMyJobs();
+    }
 }
