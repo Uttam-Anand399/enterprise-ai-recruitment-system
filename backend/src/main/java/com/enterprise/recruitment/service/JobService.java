@@ -6,6 +6,7 @@ import com.enterprise.recruitment.entity.Job;
 import com.enterprise.recruitment.repository.AppUserRepository;
 import com.enterprise.recruitment.repository.JobRepository;
 import com.enterprise.recruitment.dto.JobSummaryResponse;
+import com.enterprise.recruitment.dto.JobDetailResponse;
 
 import java.util.List;
 
@@ -114,6 +115,27 @@ public class JobService {
                         job.getLocation()
                 ))
                 .toList();
+
+    }
+    public JobDetailResponse getJobById(Long id) {
+
+        Job job = repository.findById(id)
+                .orElseThrow(() ->
+                        new RuntimeException("Job not found"));
+
+        return new JobDetailResponse(
+
+                job.getId(),
+                job.getTitle(),
+                job.getDepartment(),
+                job.getLocation(),
+                job.getDescription(),
+                job.getRequirements(),
+                job.getEmploymentType(),
+                job.getWorkMode(),
+                job.getStatus()
+
+        );
 
     }
 
