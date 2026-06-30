@@ -5,6 +5,9 @@ import com.enterprise.recruitment.entity.AppUser;
 import com.enterprise.recruitment.entity.Job;
 import com.enterprise.recruitment.repository.AppUserRepository;
 import com.enterprise.recruitment.repository.JobRepository;
+import com.enterprise.recruitment.dto.JobSummaryResponse;
+
+import java.util.List;
 
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -24,6 +27,9 @@ public class JobService {
         this.userRepository = userRepository;
     }
 
+    // ===========================
+    // CREATE JOB
+    // ===========================
     public Job create(CreateJobRequest request) {
 
         Authentication authentication =
@@ -33,6 +39,7 @@ public class JobService {
 
         String email =
                 authentication.getName();
+
         System.out.println("EMAIL FROM JWT = " + email);
 
         AppUser recruiter =
@@ -72,4 +79,22 @@ public class JobService {
 
         return repository.save(job);
     }
+
+    // ===========================
+    // GET ALL JOBS
+    // ===========================
+    public List<JobSummaryResponse> getAllJobs() {
+
+        return repository.findAll()
+                .stream()
+                .map(job -> new JobSummaryResponse(
+                        job.getId(),
+                        job.getTitle(),
+                        job.getDepartment(),
+                        job.getLocation()
+                ))
+                .toList();
+
+    }
+
 }
