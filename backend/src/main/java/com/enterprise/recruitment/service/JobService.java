@@ -115,6 +115,23 @@ public class JobService {
                 updatedJob.getStatus()
         );
     }
+    
+    public void delete(Long jobId) {
+
+        Authentication authentication =
+                SecurityContextHolder
+                        .getContext()
+                        .getAuthentication();
+
+        String email = authentication.getName();
+
+        Job job = repository
+                .findByIdAndRecruiterEmail(jobId, email)
+                .orElseThrow(() ->
+                        new RuntimeException("Job not found or access denied"));
+
+        repository.delete(job);
+    }
 
     // ===========================
     // GET ALL JOBS

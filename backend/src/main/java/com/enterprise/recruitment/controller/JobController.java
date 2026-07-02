@@ -56,4 +56,11 @@ public class JobController {
  ) {
      return service.update(id, request);
  }
+ 
+ @DeleteMapping("/{id}")
+ public void deleteJob(
+         @PathVariable Long id
+ ) {
+     service.delete(id);
+ }
 }
