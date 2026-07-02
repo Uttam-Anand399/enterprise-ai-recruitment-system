@@ -3,6 +3,7 @@ package com.enterprise.recruitment.service;
 import com.enterprise.recruitment.dto.CreateJobRequest;
 import com.enterprise.recruitment.entity.AppUser;
 import com.enterprise.recruitment.entity.Job;
+import com.enterprise.recruitment.exception.ResourceNotFoundException;
 import com.enterprise.recruitment.repository.AppUserRepository;
 import com.enterprise.recruitment.repository.JobRepository;
 import com.enterprise.recruitment.dto.JobSummaryResponse;
@@ -93,8 +94,7 @@ public class JobService {
         Job job = repository
                 .findByIdAndRecruiterEmail(jobId, email)
                 .orElseThrow(() ->
-                        new RuntimeException("Job not found or access denied"));
-
+                new ResourceNotFoundException("Job not found or access denied"));
         job.setTitle(request.getTitle().trim());
         job.setDepartment(request.getDepartment());
         job.setLocation(request.getLocation());
