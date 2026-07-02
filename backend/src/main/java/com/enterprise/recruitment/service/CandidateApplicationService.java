@@ -23,6 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import com.enterprise.recruitment.dto.UpdateApplicationStatusRequest;
 import com.enterprise.recruitment.entity.ApplicationStatus;
+import com.enterprise.recruitment.dto.CandidateApplicationResponse;
 
 @Service
 public class CandidateApplicationService {
@@ -129,6 +130,33 @@ public class CandidateApplicationService {
 
         applicationRepository.save(application);
 
+    }
+    
+    @Transactional(readOnly = true)
+    public List<CandidateApplicationResponse> getMyApplications(AppUser candidate) {
+
+        return applicationRepository.findByCandidateId(candidate.getId())
+                .stream()
+                .map(application -> {
+
+                    BigDecimal score = matchScoreRepository
+                            .findByApplicationId(application.getId())
+                            .map(MatchScore::getScore)
+                            .orElse(BigDecimal.ZERO);
+
+                    return new CandidateApplicationResponse(
+
+                            application.getId(),
+                            application.getJob().getId(),
+                            application.getJob().getTitle(),
+                            application.getStatus(),
+                            score,
+                            application.getAppliedAt()
+
+                    );
+
+                })
+                .toList();
     }
 
     private byte[] readFile(MultipartFile file) {

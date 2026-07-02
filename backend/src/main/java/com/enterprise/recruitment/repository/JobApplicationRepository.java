@@ -12,4 +12,7 @@ public interface JobApplicationRepository extends JpaRepository<JobApplication, 
 
     @EntityGraph(attributePaths = {"candidate", "resume", "job"})
     List<JobApplication> findByJobId(Long jobId);
+
+    @EntityGraph(attributePaths = {"job"})
+    List<JobApplication> findByCandidateId(Long candidateId);
 }
