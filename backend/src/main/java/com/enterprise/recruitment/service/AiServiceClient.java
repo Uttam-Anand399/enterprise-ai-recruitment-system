@@ -2,7 +2,6 @@ package com.enterprise.recruitment.service;
 
 import com.enterprise.recruitment.dto.AiMatchResponse;
 import com.enterprise.recruitment.dto.AiParseResumeResponse;
-import java.io.IOException;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ByteArrayResource;
@@ -58,7 +57,7 @@ public class AiServiceClient {
         }
 
         @Override
-        public long contentLength() throws IOException {
+        public long contentLength() {
             return getByteArray().length;
         }
     }
