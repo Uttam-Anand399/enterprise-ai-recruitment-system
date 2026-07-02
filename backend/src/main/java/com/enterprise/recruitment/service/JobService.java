@@ -14,6 +14,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+
 @Service
 public class JobService {
 
@@ -79,6 +80,40 @@ public class JobService {
         );
 
         return repository.save(job);
+    }
+    public JobDetailResponse update(Long jobId, CreateJobRequest request){
+
+        Authentication authentication =
+                SecurityContextHolder
+                        .getContext()
+                        .getAuthentication();
+
+        String email = authentication.getName();
+
+        Job job = repository
+                .findByIdAndRecruiterEmail(jobId, email)
+                .orElseThrow(() ->
+                        new RuntimeException("Job not found or access denied"));
+
+        job.setTitle(request.getTitle().trim());
+        job.setDepartment(request.getDepartment());
+        job.setLocation(request.getLocation());
+        job.setDescription(request.getDescription());
+        job.setRequirements(request.getRequirements());
+
+        Job updatedJob = repository.save(job);
+
+        return new JobDetailResponse(
+                updatedJob.getId(),
+                updatedJob.getTitle(),
+                updatedJob.getDepartment(),
+                updatedJob.getLocation(),
+                updatedJob.getDescription(),
+                updatedJob.getRequirements(),
+                updatedJob.getEmploymentType(),
+                updatedJob.getWorkMode(),
+                updatedJob.getStatus()
+        );
     }
 
     // ===========================
