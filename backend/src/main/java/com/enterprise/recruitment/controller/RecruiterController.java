@@ -11,7 +11,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
+import com.enterprise.recruitment.dto.UpdateApplicationStatusRequest;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 @RestController
 @RequestMapping("/api/recruiter")
 public class RecruiterController {
@@ -31,5 +33,24 @@ public class RecruiterController {
     ) {
         roleGuard.requireAnyRole(user, Role.RECRUITER, Role.ADMIN);
         return candidateApplicationService.getCandidateRanking(jobId);
+    }
+    @PatchMapping("/applications/{applicationId}/status")
+    public void updateStatus(
+
+            @AuthenticationPrincipal AppUser user,
+
+            @PathVariable Long applicationId,
+
+            @RequestBody UpdateApplicationStatusRequest request
+
+    ) {
+
+        roleGuard.requireAnyRole(user, Role.RECRUITER, Role.ADMIN);
+
+        candidateApplicationService.updateApplicationStatus(
+                applicationId,
+                request.getStatus()
+        );
+
     }
 }

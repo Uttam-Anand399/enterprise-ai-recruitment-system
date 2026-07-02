@@ -21,6 +21,8 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
+import com.enterprise.recruitment.dto.UpdateApplicationStatusRequest;
+import com.enterprise.recruitment.entity.ApplicationStatus;
 
 @Service
 public class CandidateApplicationService {
@@ -109,6 +111,24 @@ public class CandidateApplicationService {
                 })
                 .sorted(Comparator.comparing(CandidateRankingResponse::score).reversed())
                 .toList();
+    }
+    
+    @Transactional
+    public void updateApplicationStatus(
+            Long applicationId,
+            ApplicationStatus status
+    ) {
+
+        JobApplication application =
+                applicationRepository
+                        .findById(applicationId)
+                        .orElseThrow(() ->
+                                new RuntimeException("Application not found"));
+
+        application.updateStatus(status);
+
+        applicationRepository.save(application);
+
     }
 
     private byte[] readFile(MultipartFile file) {

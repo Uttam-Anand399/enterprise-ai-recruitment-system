@@ -100,4 +100,7 @@ public class JobApplication {
     public void updateResume(Resume resume) {
         this.resume = resume;
     }
+    public void updateStatus(ApplicationStatus status) {
+        this.status = status;
+    }
 }
